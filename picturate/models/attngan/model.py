@@ -14,8 +14,8 @@ class CA_NET(nn.Module):
 
     def encode(self, text_embedding):
         x = self.relu(self.fc(text_embedding))
-        mu = x[:, :self.c_dim]
-        logvar = x[:, self.c_dim:]
+        mu = x[:, : self.c_dim]
+        logvar = x[:, self.c_dim :]
         return mu, logvar
 
     def reparametrize(self, mu, logvar):
@@ -46,7 +46,8 @@ class INIT_STAGE_G(nn.Module):
         self.fc = nn.Sequential(
             nn.Linear(nz, ngf * 4 * 4 * 2, bias=False),
             nn.BatchNorm1d(ngf * 4 * 4 * 2),
-            GLU())
+            GLU(),
+        )
 
         self.upsample1 = upBlock(ngf, ngf // 2)
         self.upsample2 = upBlock(ngf // 2, ngf // 4)
@@ -118,10 +119,7 @@ class GET_IMAGE_G(nn.Module):
     def __init__(self, ngf):
         super(GET_IMAGE_G, self).__init__()
         self.gf_dim = ngf
-        self.img = nn.Sequential(
-            conv3x3(ngf, 3),
-            nn.Tanh()
-        )
+        self.img = nn.Sequential(conv3x3(ngf, 3), nn.Tanh())
 
     def forward(self, h_code):
         out_img = self.img(h_code)
@@ -164,21 +162,20 @@ class G_NET(nn.Module):
             fake_img1 = self.img_net1(h_code1)
             fake_imgs.append(fake_img1)
         if cfg.TREE.BRANCH_NUM > 1:
-            h_code2, att1 = \
-                self.h_net2(h_code1, c_code, word_embs, mask)
+            h_code2, att1 = self.h_net2(h_code1, c_code, word_embs, mask)
             fake_img2 = self.img_net2(h_code2)
             fake_imgs.append(fake_img2)
             if att1 is not None:
                 att_maps.append(att1)
         if cfg.TREE.BRANCH_NUM > 2:
-            h_code3, att2 = \
-                self.h_net3(h_code2, c_code, word_embs, mask)
+            h_code3, att2 = self.h_net3(h_code2, c_code, word_embs, mask)
             fake_img3 = self.img_net3(h_code3)
             fake_imgs.append(fake_img3)
             if att2 is not None:
                 att_maps.append(att2)
 
         return fake_imgs, att_maps, mu, logvar
+
 
 class G_DCGAN(nn.Module):
     def __init__(self):
@@ -228,7 +225,7 @@ def Block3x3_leakRelu(in_planes, out_planes):
     block = nn.Sequential(
         conv3x3(in_planes, out_planes),
         nn.BatchNorm2d(out_planes),
-        nn.LeakyReLU(0.2, inplace=True)
+        nn.LeakyReLU(0.2, inplace=True),
     )
     return block
 
@@ -238,7 +235,7 @@ def downBlock(in_planes, out_planes):
     block = nn.Sequential(
         nn.Conv2d(in_planes, out_planes, 4, 2, 1, bias=False),
         nn.BatchNorm2d(out_planes),
-        nn.LeakyReLU(0.2, inplace=True)
+        nn.LeakyReLU(0.2, inplace=True),
     )
     return block
 
@@ -260,7 +257,7 @@ def encode_image_by_16times(ndf):
         # --> state size 8ndf x in_size/16 x in_size/16
         nn.Conv2d(ndf * 4, ndf * 8, 4, 2, 1, bias=False),
         nn.BatchNorm2d(ndf * 8),
-        nn.LeakyReLU(0.2, inplace=True)
+        nn.LeakyReLU(0.2, inplace=True),
     )
     return encode_img
 
@@ -275,8 +272,8 @@ class D_GET_LOGITS(nn.Module):
             self.jointConv = Block3x3_leakRelu(ndf * 8 + nef, ndf * 8)
 
         self.outlogits = nn.Sequential(
-            nn.Conv2d(ndf * 8, 1, kernel_size=4, stride=4),
-            nn.Sigmoid())
+            nn.Conv2d(ndf * 8, 1, kernel_size=4, stride=4), nn.Sigmoid()
+        )
 
     def forward(self, h_code, c_code=None):
         if self.bcondition and c_code is not None:
@@ -329,8 +326,8 @@ class D_NET128(nn.Module):
         self.COND_DNET = D_GET_LOGITS(ndf, nef, bcondition=True)
 
     def forward(self, x_var):
-        x_code8 = self.img_code_s16(x_var)   # 8 x 8 x 8df
-        x_code4 = self.img_code_s32(x_code8)   # 4 x 4 x 16df
+        x_code8 = self.img_code_s16(x_var)  # 8 x 8 x 8df
+        x_code4 = self.img_code_s32(x_code8)  # 4 x 4 x 16df
         x_code4 = self.img_code_s32_1(x_code4)  # 4 x 4 x 8df
         return x_code4
 

@@ -3,8 +3,15 @@ from picturate.models.attngan import *
 
 # ############## Text2Image Encoder-Decoder #######
 class RNN_ENCODER(nn.Module):
-    def __init__(self, ntoken, ninput=300, drop_prob=0.5,
-                 nhidden=128, nlayers=1, bidirectional=True):
+    def __init__(
+        self,
+        ntoken,
+        ninput=300,
+        drop_prob=0.5,
+        nhidden=128,
+        nlayers=1,
+        bidirectional=True,
+    ):
         super(RNN_ENCODER, self).__init__()
         self.n_steps = cfg.TEXT.WORDS_NUM
         self.ntoken = ntoken  # size of the dictionary
@@ -26,18 +33,26 @@ class RNN_ENCODER(nn.Module):
     def define_module(self):
         self.encoder = nn.Embedding(self.ntoken, self.ninput)
         self.drop = nn.Dropout(self.drop_prob)
-        if self.rnn_type == 'LSTM':
+        if self.rnn_type == "LSTM":
             # dropout: If non-zero, introduces a dropout layer on
             # the outputs of each RNN layer except the last layer
-            self.rnn = nn.LSTM(self.ninput, self.nhidden,
-                               self.nlayers, batch_first=True,
-                               dropout=self.drop_prob,
-                               bidirectional=self.bidirectional)
-        elif self.rnn_type == 'GRU':
-            self.rnn = nn.GRU(self.ninput, self.nhidden,
-                              self.nlayers, batch_first=True,
-                              dropout=self.drop_prob,
-                              bidirectional=self.bidirectional)
+            self.rnn = nn.LSTM(
+                self.ninput,
+                self.nhidden,
+                self.nlayers,
+                batch_first=True,
+                dropout=self.drop_prob,
+                bidirectional=self.bidirectional,
+            )
+        elif self.rnn_type == "GRU":
+            self.rnn = nn.GRU(
+                self.ninput,
+                self.nhidden,
+                self.nlayers,
+                batch_first=True,
+                dropout=self.drop_prob,
+                bidirectional=self.bidirectional,
+            )
         else:
             raise NotImplementedError
 
@@ -51,14 +66,25 @@ class RNN_ENCODER(nn.Module):
 
     def init_hidden(self, bsz):
         weight = next(self.parameters()).data
-        if self.rnn_type == 'LSTM':
-            return (Variable(weight.new(self.nlayers * self.num_directions,
-                                        bsz, self.nhidden).zero_()),
-                    Variable(weight.new(self.nlayers * self.num_directions,
-                                        bsz, self.nhidden).zero_()))
+        if self.rnn_type == "LSTM":
+            return (
+                Variable(
+                    weight.new(
+                        self.nlayers * self.num_directions, bsz, self.nhidden
+                    ).zero_()
+                ),
+                Variable(
+                    weight.new(
+                        self.nlayers * self.num_directions, bsz, self.nhidden
+                    ).zero_()
+                ),
+            )
         else:
-            return Variable(weight.new(self.nlayers * self.num_directions,
-                                       bsz, self.nhidden).zero_())
+            return Variable(
+                weight.new(
+                    self.nlayers * self.num_directions, bsz, self.nhidden
+                ).zero_()
+            )
 
     def forward(self, captions, cap_lens, hidden, mask=None):
         # input: torch.LongTensor of size batch x n_steps
@@ -81,32 +107,41 @@ class RNN_ENCODER(nn.Module):
         # --> batch x hidden_size*num_directions x seq_len
         words_emb = output.transpose(1, 2)
         # --> batch x num_directions*hidden_size
-        if self.rnn_type == 'LSTM':
+        if self.rnn_type == "LSTM":
             sent_emb = hidden[0].transpose(0, 1).contiguous()
         else:
             sent_emb = hidden.transpose(0, 1).contiguous()
         sent_emb = sent_emb.view(-1, self.nhidden * self.num_directions)
         return words_emb, sent_emb
 
+
 class BERT_RNN_ENCODER(RNN_ENCODER):
     def define_module(self):
-        self.encoder = BertModel.from_pretrained('bert-base-uncased')
+        self.encoder = BertModel.from_pretrained("bert-base-uncased")
         for param in self.encoder.parameters():
             param.requires_grad = False
         self.bert_linear = nn.Linear(768, self.ninput)
         self.drop = nn.Dropout(self.drop_prob)
-        if self.rnn_type == 'LSTM':
+        if self.rnn_type == "LSTM":
             # dropout: If non-zero, introduces a dropout layer on
             # the outputs of each RNN layer except the last layer
-            self.rnn = nn.LSTM(self.ninput, self.nhidden,
-                               self.nlayers, batch_first=True,
-                               dropout=self.drop_prob,
-                               bidirectional=self.bidirectional)
-        elif self.rnn_type == 'GRU':
-            self.rnn = nn.GRU(self.ninput, self.nhidden,
-                              self.nlayers, batch_first=True,
-                              dropout=self.drop_prob,
-                              bidirectional=self.bidirectional)
+            self.rnn = nn.LSTM(
+                self.ninput,
+                self.nhidden,
+                self.nlayers,
+                batch_first=True,
+                dropout=self.drop_prob,
+                bidirectional=self.bidirectional,
+            )
+        elif self.rnn_type == "GRU":
+            self.rnn = nn.GRU(
+                self.ninput,
+                self.nhidden,
+                self.nlayers,
+                batch_first=True,
+                dropout=self.drop_prob,
+                bidirectional=self.bidirectional,
+            )
         else:
             raise NotImplementedError
 
@@ -141,12 +176,13 @@ class BERT_RNN_ENCODER(RNN_ENCODER):
         # --> batch x hidden_size*num_directions x seq_len
         words_emb = output.transpose(1, 2)
         # --> batch x num_directions*hidden_size
-        if self.rnn_type == 'LSTM':
+        if self.rnn_type == "LSTM":
             sent_emb = hidden[0].transpose(0, 1).contiguous()
         else:
             sent_emb = hidden.transpose(0, 1).contiguous()
         sent_emb = sent_emb.view(-1, self.nhidden * self.num_directions)
         return words_emb, sent_emb
+
 
 class CNN_ENCODER(nn.Module):
     def __init__(self, nef):
@@ -157,11 +193,11 @@ class CNN_ENCODER(nn.Module):
             self.nef = 256  # define a uniform ranker
 
         model = models.inception_v3()
-        url = 'https://download.pytorch.org/models/inception_v3_google-1a9a5a14.pth'
+        url = "https://download.pytorch.org/models/inception_v3_google-1a9a5a14.pth"
         model.load_state_dict(model_zoo.load_url(url))
-        for param in model.parameters(): # freeze inception model
+        for param in model.parameters():  # freeze inception model
             param.requires_grad = False
-        print('Load pretrained model from ', url)
+        print("Load pretrained model from ", url)
         # print(model)
 
         self.define_module(model)
@@ -196,7 +232,7 @@ class CNN_ENCODER(nn.Module):
     def forward(self, x):
         features = None
         # --> fixed-size input: batch x 3 x 299 x 299
-        x = Upsample(size=(299, 299), mode='bilinear')(x)
+        x = Upsample(size=(299, 299), mode="bilinear")(x)
         # 299 x 299 x 3
         x = self.Conv2d_1a_3x3(x)
         # 149 x 149 x 32
@@ -249,16 +285,25 @@ class CNN_ENCODER(nn.Module):
         # 2048
 
         # global image features
-        cnn_code = self.emb_cnn_code(x) # nef
+        cnn_code = self.emb_cnn_code(x)  # nef
 
         if features is not None:
-            features = self.emb_features(features) # 17 x 17 x nef
+            features = self.emb_features(features)  # 17 x 17 x nef
         return features, cnn_code
 
 
 # ############## Image2text Encoder-Decoder #######
 class CNN_ENCODER_RNN_DECODER(CNN_ENCODER):
-    def __init__(self, emb_size, hidden_size, vocab_size, nlayers=1, bidirectional=True, rec_unit='LSTM', dropout=0.5):
+    def __init__(
+        self,
+        emb_size,
+        hidden_size,
+        vocab_size,
+        nlayers=1,
+        bidirectional=True,
+        rec_unit="LSTM",
+        dropout=0.5,
+    ):
         """
         Based on https://github.com/komiya-m/MirrorGAN/blob/master/model.py
         :param emb_size: size of word embeddings
@@ -271,17 +316,23 @@ class CNN_ENCODER_RNN_DECODER(CNN_ENCODER):
         self.bidirectional = bidirectional
         self.num_directions = 2 if self.bidirectional else 1
         __rec_units = {
-            'GRU': nn.GRU,
-            'LSTM': nn.LSTM,
+            "GRU": nn.GRU,
+            "LSTM": nn.LSTM,
         }
-        assert rec_unit in __rec_units, 'Specified recurrent unit is not available'
+        assert rec_unit in __rec_units, "Specified recurrent unit is not available"
 
         super().__init__(emb_size)
 
         self.hidden_linear = nn.Linear(emb_size, hidden_size)
         self.encoder = nn.Embedding(vocab_size, emb_size)
-        self.rnn = __rec_units[rec_unit](emb_size, hidden_size, num_layers=self.nlayers,
-                        batch_first=True, dropout=self.dropout, bidirectional=self.bidirectional)
+        self.rnn = __rec_units[rec_unit](
+            emb_size,
+            hidden_size,
+            num_layers=self.nlayers,
+            batch_first=True,
+            dropout=self.dropout,
+            bidirectional=self.bidirectional,
+        )
         self.out = nn.Linear(self.num_directions * hidden_size, vocab_size)
 
     def forward(self, x, captions):
@@ -305,8 +356,18 @@ class CNN_ENCODER_RNN_DECODER(CNN_ENCODER):
 
         return features, cnn_code, logits
 
+
 class BERT_CNN_ENCODER_RNN_DECODER(CNN_ENCODER):
-    def __init__(self, emb_size, hidden_size, vocab_size, nlayers=1, bidirectional=True, rec_unit='LSTM', dropout=0.5):
+    def __init__(
+        self,
+        emb_size,
+        hidden_size,
+        vocab_size,
+        nlayers=1,
+        bidirectional=True,
+        rec_unit="LSTM",
+        dropout=0.5,
+    ):
         """
         Based on https://github.com/komiya-m/MirrorGAN/blob/master/model.py
         :param emb_size: size of word embeddings
@@ -319,21 +380,27 @@ class BERT_CNN_ENCODER_RNN_DECODER(CNN_ENCODER):
         self.bidirectional = bidirectional
         self.num_directions = 2 if self.bidirectional else 1
         __rec_units = {
-            'GRU': nn.GRU,
-            'LSTM': nn.LSTM,
+            "GRU": nn.GRU,
+            "LSTM": nn.LSTM,
         }
-        assert rec_unit in __rec_units, 'Specified recurrent unit is not available'
+        assert rec_unit in __rec_units, "Specified recurrent unit is not available"
 
         super().__init__(emb_size)
 
         self.hidden_linear = nn.Linear(emb_size, hidden_size)
-        self.encoder = BertModel.from_pretrained('bert-base-uncased')
+        self.encoder = BertModel.from_pretrained("bert-base-uncased")
         for param in self.encoder.parameters():
             param.requires_grad = False
 
         self.bert_linear = nn.Linear(768, emb_size)
-        self.rnn = __rec_units[rec_unit](emb_size, hidden_size, num_layers=self.nlayers,
-                        batch_first=True, dropout=self.dropout, bidirectional=self.bidirectional)
+        self.rnn = __rec_units[rec_unit](
+            emb_size,
+            hidden_size,
+            num_layers=self.nlayers,
+            batch_first=True,
+            dropout=self.dropout,
+            bidirectional=self.bidirectional,
+        )
 
         self.out = nn.Linear(self.num_directions * hidden_size, vocab_size)
 
