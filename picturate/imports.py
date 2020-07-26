@@ -14,5 +14,5 @@ from PIL import Image, ImageDraw, ImageFont
 # Torch imports
 import torch
 import torch.nn as nn
-import torch.nn.functional as F 
+import torch.nn.functional as F
 from torch.nn import init
