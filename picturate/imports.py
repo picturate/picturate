@@ -27,3 +27,4 @@ from torch.nn import init
 from torchvision import models
 import torch.utils.model_zoo as model_zoo
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
+from pytorch_pretrained_bert import BertModel
