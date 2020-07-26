@@ -29,8 +29,9 @@ def conv1x1(in_planes, out_planes):
     Return:
         nn.Conv2d: Applies 2D convolution
     """
-    return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=1,
-                     padding=0, bias=False)
+    return nn.Conv2d(
+        in_planes, out_planes, kernel_size=1, stride=1, padding=0, bias=False
+    )
 
 
 def func_attention(query, context, gamma1):
@@ -55,16 +56,16 @@ def func_attention(query, context, gamma1):
     # Get attention
     # (batch x sourceL x ndf)(batch x ndf x queryL)
     # -->batch x sourceL x queryL
-    attn = torch.bmm(contextT, query) # Eq. (7) in AttnGAN paper
+    attn = torch.bmm(contextT, query)  # Eq. (7) in AttnGAN paper
     # --> batch*sourceL x queryL
-    attn = attn.view(batch_size*sourceL, queryL)
+    attn = attn.view(batch_size * sourceL, queryL)
     attn = nn.Softmax(dim=1)(attn)  # Eq. (8)
 
     # --> batch x sourceL x queryL
     attn = attn.view(batch_size, sourceL, queryL)
     # --> batch*queryL x sourceL
     attn = torch.transpose(attn, 1, 2).contiguous()
-    attn = attn.view(batch_size*queryL, sourceL)
+    attn = attn.view(batch_size * queryL, sourceL)
     #  Eq. (9)
     attn = attn * gamma1
     attn = nn.Softmax(dim=1)(attn)
@@ -120,7 +121,7 @@ class GlobalAttentionGeneral(nn.Module):
             torch.tensor (weightedContext): Weighted context
             torch.tensor (attn)
         """
-        
+
         ih, iw = input.size(2), input.size(3)
         queryL = ih * iw
         batch_size, sourceL = context.size(0), context.size(2)
@@ -138,11 +139,11 @@ class GlobalAttentionGeneral(nn.Module):
         # -->batch x queryL x sourceL
         attn = torch.bmm(targetT, sourceT)
         # --> batch*queryL x sourceL
-        attn = attn.view(batch_size*queryL, sourceL)
+        attn = attn.view(batch_size * queryL, sourceL)
         if self.mask is not None:
             # batch_size x sourceL --> batch_size*queryL x sourceL
             mask = self.mask.repeat(queryL, 1)
-            attn.data.masked_fill_(mask.data, -float('inf'))
+            attn.data.masked_fill_(mask.data, -float("inf"))
         attn = self.sm(attn)  # Eq. (2)
         # --> batch x queryL x sourceL
         attn = attn.view(batch_size, queryL, sourceL)
