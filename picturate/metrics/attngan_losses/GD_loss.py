@@ -1,4 +1,5 @@
 from picturate.imports import *
+from picturate.config import *
 from picturate.metrics.attngan_losses import *
 
 
