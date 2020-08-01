@@ -8,16 +8,16 @@ class GeneratedDataset(Dataset):
 
         self.all_images = []
         for dir in list(os.listdir(self.root_dir)):
-            if dir == '.DS_Store': continue
+            if dir == ".DS_Store":
+                continue
             for filename in list(os.listdir(os.path.join(self.root_dir, dir))):
                 self.all_images.append(os.path.join(dir, filename))
-
 
     def __len__(self):
         return len(self.all_images)
 
     def __getitem__(self, idx):
-        img_name = os.path.join(self.root_dir,self.all_images[idx])
+        img_name = os.path.join(self.root_dir, self.all_images[idx])
         image = io.imread(img_name)
         sample = image
 
@@ -25,6 +25,7 @@ class GeneratedDataset(Dataset):
             sample = self.transform(sample)
 
         return sample
+
 
 def inception_score(imgs, cuda=True, batch_size=32, resize=False, splits=1):
     """Computes the inception score of the generated images imgs
@@ -43,7 +44,9 @@ def inception_score(imgs, cuda=True, batch_size=32, resize=False, splits=1):
         dtype = torch.cuda.FloatTensor
     else:
         if torch.cuda.is_available():
-            print("WARNING: You have a CUDA device, so you should probably set cuda=True")
+            print(
+                "WARNING: You have a CUDA device, so you should probably set cuda=True"
+            )
         dtype = torch.FloatTensor
 
     # Set up dataloader
@@ -52,7 +55,8 @@ def inception_score(imgs, cuda=True, batch_size=32, resize=False, splits=1):
     # Load inception model
     inception_model = inception_v3(pretrained=True, transform_input=False).type(dtype)
     inception_model.eval()
-    up = nn.Upsample(size=(299, 299), mode='bilinear').type(dtype)
+    up = nn.Upsample(size=(299, 299), mode="bilinear").type(dtype)
+
     def get_pred(x):
         if resize:
             x = up(x)
@@ -69,13 +73,13 @@ def inception_score(imgs, cuda=True, batch_size=32, resize=False, splits=1):
         batchv = Variable(batch)
         batch_size_i = batch.size()[0]
 
-        preds[i*batch_size:i*batch_size + batch_size_i] = get_pred(batchv)
+        preds[i * batch_size : i * batch_size + batch_size_i] = get_pred(batchv)
 
     # Now compute the mean kl-div
     split_scores = []
 
     for k in range(splits):
-        part = preds[k * (N // splits): (k+1) * (N // splits), :]
+        part = preds[k * (N // splits) : (k + 1) * (N // splits), :]
         py = np.mean(part, axis=0)
         scores = []
         for i in range(part.shape[0]):
@@ -86,7 +90,7 @@ def inception_score(imgs, cuda=True, batch_size=32, resize=False, splits=1):
     return np.mean(split_scores), np.std(split_scores)
 
 
-data_path = 'models/attn/netG_epoch_150/single'
+data_path = "models/attn/netG_epoch_150/single"
 imgs = GeneratedDataset(data_path)
 
 print(inception_score(imgs))

@@ -2,6 +2,7 @@ from picturate.imports import *
 from picturate.config import *
 from picturate.models.attngan import *
 
+
 def cosine_similarity(x1, x2, dim=1, eps=1e-8):
     """Returns cosine similarity between x1 and x2, computed along dim.
     """
@@ -123,11 +124,13 @@ def words_loss(img_features, words_emb, labels, cap_lens, class_ids, batch_size)
         loss0, loss1 = None, None
     return loss0, loss1, att_maps
 
+
 def KL_loss(mu, logvar):
     # -0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
     KLD_element = mu.pow(2).add_(logvar.exp()).mul_(-1).add_(1).add_(logvar)
     KLD = torch.mean(KLD_element).mul_(-0.5)
     return KLD
+
 
 def image_to_text_loss(output, target):
     # bs x T x vocab_size - > bs * T x vocab_size
@@ -136,6 +139,7 @@ def image_to_text_loss(output, target):
     # bs x T -> bs * T
     target = target.view(-1)
     return F.cross_entropy(output, target)
+
 
 def attngan_discriminator_loss(
     netD, real_imgs, fake_imgs, conditions, real_labels, fake_labels

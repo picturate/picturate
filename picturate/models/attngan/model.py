@@ -2,6 +2,7 @@ from picturate.imports import *
 from picturate.config import *
 from picturate.models.attngan import *
 
+
 class GLU(nn.Module):
     def __init__(self):
         super(GLU, self).__init__()
@@ -62,6 +63,7 @@ class ResBlock(nn.Module):
         out = self.block(x)
         out += residual
         return out
+
 
 # ############## Text2Image Encoder-Decoder #######
 class RNN_ENCODER(nn.Module):
@@ -489,6 +491,7 @@ class BERT_CNN_ENCODER_RNN_DECODER(CNN_ENCODER):
         # bs, T, vocab_size
 
         return features, cnn_code, logits
+
 
 # ############## G networks ###################
 class CA_NET(nn.Module):
