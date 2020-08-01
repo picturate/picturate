@@ -39,15 +39,11 @@ py_versions = (
 
 extras = {}
 requirements = cfg.get("requirements", "").split()
-pl_req = cfg.get("pytorch_lightning", "").split()
-fs_req = cfg.get("fastai").split()
 all_req = cfg.get("all").split()
 
 lic = licenses[cfg["license"]]
 min_python = cfg["min_python"]
 
-extras["pytorch-lightning"] = pl_req
-extras["fastai"] = fs_req
 extras["all"] = all_req
 
 setuptools.setup(
