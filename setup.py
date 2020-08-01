@@ -39,7 +39,7 @@ py_versions = (
 
 extras = {}
 requirements = cfg.get("requirements", "").split()
-all_req = cfg.get("all").split()
+
 
 lic = licenses[cfg["license"]]
 min_python = cfg["min_python"]
