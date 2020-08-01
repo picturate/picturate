@@ -44,7 +44,7 @@ requirements = cfg.get("requirements", "").split()
 lic = licenses[cfg["license"]]
 min_python = cfg["min_python"]
 
-extras["all"] = all_req
+
 
 setuptools.setup(
     name=cfg["lib_name"],
