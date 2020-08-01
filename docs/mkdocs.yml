@@ -1,4 +1,4 @@
-site_name: Picturate Docs
+site_name: Picturate
 theme:
   name: "material"
   palette:
@@ -7,6 +7,9 @@ theme:
 
 docs_dir: templates
 repo_url: https://github.com/picturate/picturate
+site_url: https://picturate.github.io/picturate/
+edit_uri: ""
+site_description: 'Documentation for Picturate.'
 markdown_extensions:
   - codehilite
   - pymdownx.superfences:
