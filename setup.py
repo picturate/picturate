@@ -45,7 +45,6 @@ lic = licenses[cfg["license"]]
 min_python = cfg["min_python"]
 
 
-
 setuptools.setup(
     name=cfg["lib_name"],
     license=lic[0],
