@@ -5,7 +5,7 @@ theme:
     primary: "blue"
     accent: "blue"
 
-docs_dir: templates
+docs_dir: sources
 repo_url: https://github.com/picturate/picturate
 site_url: https://picturate.github.io/picturate/
 edit_uri: ""
