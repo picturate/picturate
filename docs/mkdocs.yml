@@ -1,9 +1,10 @@
 site_name: Picturate
 theme:
-  name: "material"
+  name: 'material'
   palette:
-    primary: "blue"
-    accent: "blue"
+    scheme: default # default slate
+    primary: 'blue'
+    accent: 'blue'
 
 docs_dir: sources
 repo_url: https://github.com/picturate/picturate
@@ -21,8 +22,10 @@ markdown_extensions:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
   - admonition
+
 extra_javascript:
   - https://unpkg.com/mermaid@8.4.4/dist/mermaid.min.js
 
 nav:
   - Home: index.md
+  
