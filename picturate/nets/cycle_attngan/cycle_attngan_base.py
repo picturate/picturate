@@ -140,18 +140,18 @@ class G_NET(nn.Module):
         ngf = self.cfg.GAN.GF_DIM
         nef = self.cfg.TEXT.EMBEDDING_DIM
         ncf = self.cfg.GAN.CONDITION_DIM
-        self.ca_net = CA_NET()
+        self.ca_net = CA_NET(self.cfg)
 
         if self.cfg.TREE.BRANCH_NUM > 0:
-            self.h_net1 = INIT_STAGE_G(ngf * 16, ncf)
-            self.img_net1 = GET_IMAGE_G(ngf)
+            self.h_net1 = INIT_STAGE_G(ngf * 16, ncf, self.cfg)
+            self.img_net1 = GET_IMAGE_G(ngf, self.cfg)
         # gf x 64 x 64
         if self.cfg.TREE.BRANCH_NUM > 1:
-            self.h_net2 = NEXT_STAGE_G(ngf, nef, ncf)
-            self.img_net2 = GET_IMAGE_G(ngf)
+            self.h_net2 = NEXT_STAGE_G(ngf, nef, ncf, self.cfg)
+            self.img_net2 = GET_IMAGE_G(ngf, self.cfg)
         if self.cfg.TREE.BRANCH_NUM > 2:
-            self.h_net3 = NEXT_STAGE_G(ngf, nef, ncf)
-            self.img_net3 = GET_IMAGE_G(ngf)
+            self.h_net3 = NEXT_STAGE_G(ngf, nef, ncf, self.cfg)
+            self.img_net3 = GET_IMAGE_G(ngf, self.cfg)
 
     def forward(self, z_code, sent_emb, word_embs, mask):
         """
@@ -192,17 +192,17 @@ class G_DCGAN(nn.Module):
         ngf = self.cfg.GAN.GF_DIM
         nef = self.cfg.TEXT.EMBEDDING_DIM
         ncf = self.cfg.GAN.CONDITION_DIM
-        self.ca_net = CA_NET()
+        self.ca_net = CA_NET(self.cfg)
 
         # 16gf x 64 x 64 --> gf x 64 x 64 --> 3 x 64 x 64
         if self.cfg.TREE.BRANCH_NUM > 0:
-            self.h_net1 = INIT_STAGE_G(ngf * 16, ncf)
+            self.h_net1 = INIT_STAGE_G(ngf * 16, ncf, self.cfg)
         # gf x 64 x 64
         if self.cfg.TREE.BRANCH_NUM > 1:
-            self.h_net2 = NEXT_STAGE_G(ngf, nef, ncf)
+            self.h_net2 = NEXT_STAGE_G(ngf, nef, ncf, self.cfg)
         if self.cfg.TREE.BRANCH_NUM > 2:
-            self.h_net3 = NEXT_STAGE_G(ngf, nef, ncf)
-        self.img_net = GET_IMAGE_G(ngf)
+            self.h_net3 = NEXT_STAGE_G(ngf, nef, ncf, self.cfg)
+        self.img_net = GET_IMAGE_G(ngf, self.cfg)
 
     def forward(self, z_code, sent_emb, word_embs, mask):
         """
