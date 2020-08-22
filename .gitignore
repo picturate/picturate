@@ -1,4 +1,12 @@
-tests/__pycache__/
 .vscode/settings.json
 docs/__pycache__/tutobooks.cpython-38.pyc
 picturate.egg-info/
+docs/site/
+
+
+tests/__pycache__/
+picturate/__pycache__/
+picturate/config/__pycache__/
+picturate/metrics/__pycache__/
+picturate/nets/__pycache__/
+picturate/nets/cycle_attngan/__pycache__/

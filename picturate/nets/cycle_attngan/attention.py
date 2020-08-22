@@ -1,5 +1,4 @@
 from picturate.imports import *
-from picturate.models.attngan import *
 
 """
 Global attention takes a matrix and a query metrix.

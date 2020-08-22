@@ -33,7 +33,8 @@ import torch.utils.model_zoo as model_zoo
 from torch.utils.data import Dataset, DataLoader
 import torch.utils.data
 
-from pytorch_pretrained_bert import BertModel
+from transformers import BertTokenizer, BertModel
+
 
 from torchvision import models
 from torchvision.models.inception import inception_v3
