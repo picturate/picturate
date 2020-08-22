@@ -38,7 +38,7 @@ class CA_NET(nn.Module):
 
 class INIT_STAGE_G(nn.Module):
     def __init__(self, ngf, ncf):
-        super(INIT_STAGE_G, self).__init__()s
+        super(INIT_STAGE_G, self).__init__()
         self.gf_dim = ngf
         self.in_dim = cfg.GAN.Z_DIM + ncf  # cfg.TEXT.EMBEDDING_DIM
 
