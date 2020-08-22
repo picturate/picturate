@@ -2,3 +2,4 @@ tests/__pycache__/
 .vscode/settings.json
 docs/__pycache__/tutobooks.cpython-38.pyc
 picturate.egg-info/
+docs/site/
