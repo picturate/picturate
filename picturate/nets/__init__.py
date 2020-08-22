@@ -1,1 +1,1 @@
-from picturate.models.attngan import *
+from picturate.nets.cycle_attngan import *
