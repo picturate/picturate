@@ -67,6 +67,7 @@ class RNN_ENCODER(nn.Module):
     def __init__(
         self,
         ntoken,
+        cfg
         ninput=300,
         drop_prob=0.5,
         nhidden=128,
@@ -74,13 +75,14 @@ class RNN_ENCODER(nn.Module):
         bidirectional=True,
     ):
         super(RNN_ENCODER, self).__init__()
-        self.n_steps = cfg.TEXT.WORDS_NUM
+        self.cfg = cfg
+        self.n_steps = self.cfg.TEXT.WORDS_NUM
         self.ntoken = ntoken  # size of the dictionary
         self.ninput = ninput  # size of each embedding vector
         self.drop_prob = drop_prob  # probability of an element to be zeroed
         self.nlayers = nlayers  # Number of recurrent layers
         self.bidirectional = bidirectional
-        self.rnn_type = cfg.RNN_TYPE
+        self.rnn_type = self.cfg.RNN_TYPE
         if bidirectional:
             self.num_directions = 2
         else:
@@ -246,9 +248,10 @@ class BERT_RNN_ENCODER(RNN_ENCODER):
 
 
 class CNN_ENCODER(nn.Module):
-    def __init__(self, nef):
+    def __init__(self, nef, cfg):
         super(CNN_ENCODER, self).__init__()
-        if cfg.TRAIN.FLAG:
+        self.cfg = cfg
+        if self.cfg.TRAIN.FLAG:
             self.nef = nef
         else:
             self.nef = 256  # define a uniform ranker
