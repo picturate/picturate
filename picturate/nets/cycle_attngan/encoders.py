@@ -1,5 +1,6 @@
 from picturate.imports import *
 
+
 class GLU(nn.Module):
     def __init__(self):
         super(GLU, self).__init__()
@@ -67,7 +68,7 @@ class RNN_ENCODER(nn.Module):
     def __init__(
         self,
         ntoken,
-        cfg
+        cfg,
         ninput=300,
         drop_prob=0.5,
         nhidden=128,
