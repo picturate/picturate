@@ -4,6 +4,8 @@ from picturate.nets.cycle_attngan.attention import GlobalAttentionGeneral
 from picturate.nets.cycle_attngan.encoders import GLU, upBlock, ResBlock, conv3x3
 
 
+__all__ = ["G_NET"]
+
 # ############## G networks ###################
 class CA_NET(nn.Module):
     # some code is modified from vae examples
