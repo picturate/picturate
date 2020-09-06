@@ -7,11 +7,13 @@ import os
 import os.path as osp
 import errno
 import yaml
+import pickle
 from easydict import EasyDict as edict
 
 
 # Machine learning library imports
 import numpy as np
+from nltk.tokenize import RegexpTokenizer
 from scipy.stats import entropy
 
 # Image library imports
