@@ -10,3 +10,4 @@ picturate/config/__pycache__/
 picturate/metrics/__pycache__/
 picturate/nets/__pycache__/
 picturate/nets/cycle_attngan/__pycache__/
+picturate/.weights/
