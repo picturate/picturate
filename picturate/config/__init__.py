@@ -1,1 +1,2 @@
-from picturate.config.config import *
+from picturate.config.util import *
+from picturate.config.CAttnGAN import *
