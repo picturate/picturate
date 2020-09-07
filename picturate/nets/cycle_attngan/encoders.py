@@ -1,5 +1,6 @@
 from picturate.imports import *
 
+__all__ = ["BERT_RNN_ENCODER"]
 
 class GLU(nn.Module):
     def __init__(self):
@@ -29,7 +30,7 @@ def conv3x3(in_planes, out_planes):
 # Upsale the spatial size by a factor of 2
 def upBlock(in_planes, out_planes):
     block = nn.Sequential(
-        Upsample(scale_factor=2, mode="nearest"),
+        nn.Upsample(scale_factor=2, mode="nearest"),
         conv3x3(in_planes, out_planes * 2),
         nn.BatchNorm2d(out_planes * 2),
         GLU(),
@@ -181,9 +182,15 @@ class RNN_ENCODER(nn.Module):
 
 class BERT_RNN_ENCODER(RNN_ENCODER):
     def define_module(self):
+        model_config = BertConfig.from_pretrained('bert-base-uncased', output_hidden_states=False)
         self.encoder = BertModel.from_pretrained("bert-base-uncased")
         for param in self.encoder.parameters():
             param.requires_grad = False
+
+        print("[INFO] N hidden is ")
+        print(self.nhidden)
+        print("[INFO] Ninput is ")
+        
         self.bert_linear = nn.Linear(768, self.ninput)
         self.drop = nn.Dropout(self.drop_prob)
         if self.rnn_type == "LSTM":
@@ -220,10 +227,13 @@ class BERT_RNN_ENCODER(RNN_ENCODER):
     def forward(self, captions, cap_lens, hidden, mask=None):
         # input: torch.LongTensor of size batch x n_steps
         # --> emb: batch x n_steps x ninput
-        emb, _ = self.encoder(captions, output_all_encoded_layers=False)
+        # emb, _ = self.encoder(captions, output_all_encoded_layers=False)
+        
+        emb, _ = self.encoder(captions)
+        
         emb = self.bert_linear(emb)
         emb = self.drop(emb)
-        #
+        
         # Returns: a PackedSequence object
         cap_lens = cap_lens.data.tolist()
         emb = pack_padded_sequence(emb, cap_lens, batch_first=True)
