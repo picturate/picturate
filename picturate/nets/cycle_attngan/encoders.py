@@ -1,5 +1,11 @@
 from picturate.imports import *
 
+"""
+Code based on the repository by suetAndTie
+https://github.com/suetAndTie/cycle-image-gan
+"""
+
+
 __all__ = ["BERT_RNN_ENCODER"]
 
 class GLU(nn.Module):

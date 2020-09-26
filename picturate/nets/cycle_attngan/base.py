@@ -3,6 +3,10 @@ from picturate.config import *
 from picturate.nets.cycle_attngan.attention import GlobalAttentionGeneral as ATT_NET
 from picturate.nets.cycle_attngan.encoders import GLU, upBlock, ResBlock, conv3x3
 
+"""
+Code based on the repository by suetAndTie
+https://github.com/suetAndTie/cycle-image-gan
+"""
 
 __all__ = ["G_NET"]
 
