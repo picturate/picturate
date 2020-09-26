@@ -1,6 +1,13 @@
 from picturate.imports import *
 
+"""
+Code based on the repository by suetAndTie
+https://github.com/suetAndTie/cycle-image-gan
+"""
+
+
 __all__ = ["BERT_RNN_ENCODER"]
+
 
 class GLU(nn.Module):
     def __init__(self):
@@ -182,7 +189,9 @@ class RNN_ENCODER(nn.Module):
 
 class BERT_RNN_ENCODER(RNN_ENCODER):
     def define_module(self):
-        model_config = BertConfig.from_pretrained('bert-base-uncased', output_hidden_states=False)
+        model_config = BertConfig.from_pretrained(
+            "bert-base-uncased", output_hidden_states=False
+        )
         self.encoder = BertModel.from_pretrained("bert-base-uncased")
         for param in self.encoder.parameters():
             param.requires_grad = False
@@ -190,7 +199,7 @@ class BERT_RNN_ENCODER(RNN_ENCODER):
         print("[INFO] N hidden is ")
         print(self.nhidden)
         print("[INFO] Ninput is ")
-        
+
         self.bert_linear = nn.Linear(768, self.ninput)
         self.drop = nn.Dropout(self.drop_prob)
         if self.rnn_type == "LSTM":
@@ -228,12 +237,12 @@ class BERT_RNN_ENCODER(RNN_ENCODER):
         # input: torch.LongTensor of size batch x n_steps
         # --> emb: batch x n_steps x ninput
         # emb, _ = self.encoder(captions, output_all_encoded_layers=False)
-        
+
         emb, _ = self.encoder(captions)
-        
+
         emb = self.bert_linear(emb)
         emb = self.drop(emb)
-        
+
         # Returns: a PackedSequence object
         cap_lens = cap_lens.data.tolist()
         emb = pack_padded_sequence(emb, cap_lens, batch_first=True)

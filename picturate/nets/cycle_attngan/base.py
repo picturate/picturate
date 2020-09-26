@@ -3,6 +3,10 @@ from picturate.config import *
 from picturate.nets.cycle_attngan.attention import GlobalAttentionGeneral as ATT_NET
 from picturate.nets.cycle_attngan.encoders import GLU, upBlock, ResBlock, conv3x3
 
+"""
+Code based on the repository by suetAndTie
+https://github.com/suetAndTie/cycle-image-gan
+"""
 
 __all__ = ["G_NET"]
 
@@ -27,9 +31,13 @@ class CA_NET(nn.Module):
     def reparametrize(self, mu, logvar):
         std = logvar.mul(0.5).exp_()
         if self.cfg.CUDA:
+
             eps = torch.cuda.FloatTensor(std.size()).normal_()
+            mu = mu.cuda()
+            std = std.cuda()
         else:
             eps = torch.FloatTensor(std.size()).normal_()
+
         eps = Variable(eps)
         return eps.mul(std).add_(mu)
 

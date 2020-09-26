@@ -66,6 +66,7 @@ __C.TEXT.WORDS_NUM = 18
 
 __C.N_WORDS = 5450
 
+
 def _merge_a_into_b(a, b):
     """Merge config dictionary a into config dictionary b, clobbering the
     options in b whenever they are also specified in a.
@@ -105,17 +106,16 @@ def _merge_a_into_b(a, b):
                 raise
         else:
             b[k] = v
-        
+
     return b
 
 
 def CAttnGANConfig(filename):
 
-    yaml_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'yaml_files')
+    yaml_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "yaml_files")
 
-    if filename == 'bird':
+    if filename == "bird":
         path = os.path.join(yaml_dir, "{}_cycle.yaml".format(filename))
 
     base_config = load_yaml(path)
     return _merge_a_into_b(base_config, __C)
-    
