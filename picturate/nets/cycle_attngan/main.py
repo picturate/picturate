@@ -20,7 +20,14 @@ class CAttnGAN:
     def load_models(self):
 
         # Load word to index mapping
+        
         word2idx_path = os.path.join(self.cache_directory, "word2idx.pkl")
+        
+        if not self.weight_exists("word2idx.pkl"):
+                pretrained_file_path = "https://drive.google.com/uc?export=download&id=1TZuLYKxhxhS6x_U3_WVu1_cU9lAxgOgD"
+                save_path = os.path.join(self.cache_directory, "G_NET.pth")
+                gdown.download(pretrained_file_path, save_path, quiet=False)
+
         self.word2idx = pickle.load(open(word2idx_path, "rb"))
 
         # Load G_NET
