@@ -38,7 +38,9 @@ py_versions = (
 )
 
 extras = {}
-requirements = cfg.get("requirements", "").split()
+
+
+requirements = open('requirements.txt').read().split('\n')
 
 
 lic = licenses[cfg["license"]]
