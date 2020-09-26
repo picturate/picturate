@@ -95,7 +95,7 @@ class CAttnGAN():
         return data_dic
 
 
-    def generate_image(self, sentence):
+    def generate_image(self, sentence, filename):
         data_dic = self.get_tokens(sentence)
         
         for key in data_dic:
@@ -137,7 +137,7 @@ class CAttnGAN():
 
                     im = Image.fromarray(im)
 
-                    im.save("{}.png".format(str(k)))
+                    im.save("{}_{}.png".format(filename, str(k)))
 
     def weight_exists(self, file_name):
         _path = os.path.join(self.cache_directory, file_name)
