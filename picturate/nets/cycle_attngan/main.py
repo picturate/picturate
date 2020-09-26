@@ -27,7 +27,12 @@ class CAttnGAN():
 
 
         if self.pretrained is True:
-    
+            
+            if not self.weight_exists('G_NET.pth'):
+                pretrained_file_path = "https://drive.google.com/uc?export=download&id=1LHR_SsJo_YtihVunhluoWTIXGxFIsUSl"
+                save_path = os.path.join(self.cache_directory, 'G_NET.pth')
+                gdown.download(pretrained_file_path, save_path, quiet=False)
+
             G_NET_path = os.path.join(self.cache_directory, 'G_NET.pth')
             state_dict = torch.load(G_NET_path, map_location=lambda storage, loc: storage)
             self.netG.load_state_dict(state_dict)
@@ -41,6 +46,11 @@ class CAttnGAN():
         self.text_encoder = BERT_RNN_ENCODER(self.cfg.N_WORDS, cfg=self.cfg, nhidden=self.cfg.TEXT.EMBEDDING_DIM)
 
         if self.pretrained is True:
+
+            if not self.weight_exists('BERT_RNN_ENCODER.pth'):
+                pretrained_file_path = "https://drive.google.com/uc?export=download&id=1EqcAdwtbM5TU2qyQ7LSsDxlyLzJscKL6"
+                save_path = os.path.join(self.cache_directory, 'G_NET.pth')
+                gdown.download(pretrained_file_path, save_path, quiet=False)
     
             BERT_RNN_ENCODER_path = os.path.join(self.cache_directory, 'BERT_RNN_ENCODER.pth')
             state_dict = torch.load(BERT_RNN_ENCODER_path, map_location=lambda storage, loc: storage)
@@ -128,3 +138,7 @@ class CAttnGAN():
                     im = Image.fromarray(im)
 
                     im.save("{}.png".format(str(k)))
+
+    def weight_exists(self, file_name):
+        _path = os.path.join(self.cache_directory, file_name)
+        return os.path.exists(_path)
