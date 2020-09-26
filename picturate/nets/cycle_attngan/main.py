@@ -3,8 +3,12 @@ from picturate.nets.cycle_attngan import *
 
 class CAttnGAN():
 
-    def __init__(self, cfg, pretrained=False):
+    def __init__(self, cfg, pretrained=False, cuda=False):
         self.cfg = cfg
+
+        if cuda is False:
+            self.cfg.CUDA = False
+
         self.cache_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../.weights')
         self.pretrained = pretrained
         
@@ -27,6 +31,9 @@ class CAttnGAN():
             G_NET_path = os.path.join(self.cache_directory, 'G_NET.pth')
             state_dict = torch.load(G_NET_path, map_location=lambda storage, loc: storage)
             self.netG.load_state_dict(state_dict)
+
+            if self.cfg.CUDA:
+                self.netG.cuda()
         
         self.netG.eval()
 
@@ -99,6 +106,13 @@ class CAttnGAN():
             mask = (captions == 0)
 
             noise.data.normal_(0,1)
+
+            if self.cfg.CUDA:
+                noise = noise.cuda()
+                sent_emb = sent_emb.cuda()
+                words_embs = words_embs.cuda()
+                mask = mask.cuda()
+
             fake_imgs, attention_maps,_,_ = self.netG(noise, sent_emb, words_embs, mask)
 
             cap_lens_np = cap_lens.cpu().data.numpy()
@@ -114,11 +128,3 @@ class CAttnGAN():
                     im = Image.fromarray(im)
 
                     im.save("{}.png".format(str(k)))
-
-
-
-
-        print("[INFO] So far so good")
-    
-    def test(self):
-        print("Works")
