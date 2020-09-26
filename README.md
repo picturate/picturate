@@ -25,11 +25,11 @@
 
 * Researchers should be able to quickly reproduce and replicate the existing text to image GANs
 
-* With our metrics function they can easily benchmark their research with the other GANS
+* With our metrics functions researchers can easily benchmark their model with other GANs
 
 ## Example usage
 
-<img src="images/example.png" height="400" width="600" alt="Example code">
+<img src="images/example.png" alt="Example code">
 
 ## Model Zoo
 
