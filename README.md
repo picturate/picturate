@@ -3,6 +3,8 @@
 	<h4 align="center"> Text to image synthesis engine  <h4>
 </p>
 
+
+
 * * * * *
 >**Note: This library is still work in progress**
     All contributions are welcome
@@ -18,6 +20,9 @@
 
 <hr>
 
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1FFhQpW_3H4MYJmaueP6XNu6q8cF6Lnt4?usp=sharing]
 
 ## Why we built this
 
