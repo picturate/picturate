@@ -3,8 +3,9 @@ from picturate.nets import CAttnGAN
 
 config = CAttnGANConfig('bird')
 
-config.CUDA = False
-
 gan = CAttnGAN(config, pretrained=True)
-gan.generate_image("This little bird is blue with short beak and white underbelly")
+
+caption = "This little bird is blue with short beak and white underbelly"
+filename = 'bird'
+gan.generate_image(caption, filename)
 
