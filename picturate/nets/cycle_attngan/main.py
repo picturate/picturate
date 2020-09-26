@@ -10,7 +10,7 @@ class CAttnGAN:
             self.cfg.CUDA = False
 
         self.cache_directory = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "../../.weights"
+            os.path.dirname(os.path.realpath(__file__)), "../../weights"
         )
         self.pretrained = pretrained
 
