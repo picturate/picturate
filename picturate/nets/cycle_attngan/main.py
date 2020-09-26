@@ -60,7 +60,7 @@ class CAttnGAN:
 
             if not self.weight_exists("BERT_RNN_ENCODER.pth"):
                 pretrained_file_path = "https://drive.google.com/uc?export=download&id=1EqcAdwtbM5TU2qyQ7LSsDxlyLzJscKL6"
-                save_path = os.path.join(self.cache_directory, "G_NET.pth")
+                save_path = os.path.join(self.cache_directory, "BERT_RNN_ENCODER.pth")
                 gdown.download(pretrained_file_path, save_path, quiet=False)
 
             BERT_RNN_ENCODER_path = os.path.join(
